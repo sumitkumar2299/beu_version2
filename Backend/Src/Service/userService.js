@@ -1,7 +1,6 @@
 const {findUser,createUser} = require('../Repository/userRepository');
 const { sendMailtrapEmail, generateWelcomeEmailHTML } = require('../Middleware/mailtrapMiddleware');
 
-
 async function registerUser(userDetails){
     console.log("hitting service layer")
     // it will create a brand new user in the db
@@ -33,20 +32,22 @@ async function registerUser(userDetails){
     }
 
     // Send welcome email
+    console.log('About to send welcome email');
     try {
         await sendMailtrapEmail({
             to: newUser.email,
             subject: 'Welcome to beuHelper!',
-            html: generateWelcomeEmailHTML(newUser.firstName)
+            html: generateWelcomeEmailHTML(newUser.firstName),
+            text: 'Welcome to beuHelper!'
         });
+        console.log('Welcome email sent!');
     } catch (emailError) {
-        console.error('Failed to send welcome email:', emailError.message);
+        console.error('Failed to send welcome email:', emailError);
         // Optionally, you can continue without throwing, or throw if email is critical
     }
 
     return newUser
 }
-
 
 module.exports = {
     registerUser
